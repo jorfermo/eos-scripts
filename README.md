@@ -13,7 +13,7 @@ BP Health check plugin. It follows the [Nagios plugin guidelines](https://nagios
 ### Usage
 
 ```bash
-./check_eos_bp.py -h
+./check_eos_bp.py --help
 usage: check_eos_bp.py [-h] [-v] [-H HOST] [-p HTTP_PORT] [-p2 P2P_PORT]
                        [-c CHECK_LIST]
 
@@ -29,6 +29,6 @@ optional arguments:
                         P2P port number. default = 9876
   -c CHECK_LIST, --check_list CHECK_LIST
                         Comma separated list of checks to perform. Choices:
-                        [http,p2p]. If not set it performs all the checks
-                        sequentially
+                        [http,p2p,nodeos]. If not set it performs all the
+                        checks sequentially
 ```

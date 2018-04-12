@@ -5,6 +5,7 @@ import argparse
 import urllib.request
 from urllib.error import URLError, HTTPError
 import socket
+import psutil
 
 SERVICE_STATUS = {
     'OK': 0,
@@ -22,7 +23,7 @@ def main(argv):
                        help='HTTP port number. default = 8888')
     parser.add_argument('-p2', '--p2p_port', type=int, default=9876,
                        help='P2P port number. default = 9876')
-    parser.add_argument('-c', '--check_list', help='Comma separated list of checks to perform. Choices: [http,p2p]. If not set it performs all the checks sequentially')
+    parser.add_argument('-c', '--check_list', help='Comma separated list of checks to perform. Choices: [http,p2p,nodeos]. If not set it performs all the checks sequentially')
     args = parser.parse_args()
     HOST = args.host
     HTTP_PORT = args.http_port
@@ -51,6 +52,18 @@ def main(argv):
             sys.exit(SERVICE_STATUS['CRITICAL'])
         if VERBOSE:
                 print('P2P response is OK')
+
+    if not CHECK_LIST or 'nodeos' in CHECK_LIST:
+        process_found = False
+        for pid in psutil.pids():
+            p = psutil.Process(pid)
+            if p.name() == "nodeos":
+                process_found = True
+        if not process_found:
+            print('nodeos CRITICAL: Process not running')
+            sys.exit(SERVICE_STATUS['CRITICAL'])
+        elif VERBOSE:
+                print('nodeos process is running')
 
     print('BP Services OK')
     sys.exit(SERVICE_STATUS['OK'])
